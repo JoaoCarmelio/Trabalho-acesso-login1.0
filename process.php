@@ -6,6 +6,35 @@ if ($conn->connect_error) {
     die("Conexão falhou: " . $conn->connect_error);
 }
 
+// Função para validar CPF
+function validarCPF($cpf) {
+    $cpf = preg_replace('/[^0-9]/is', '', $cpf);
+    if (strlen($cpf) != 11) {
+        return false;
+    }
+
+    // Verifica se todos os dígitos são iguais (ex.: 11111111111)
+    for ($i = 0; $i < 10; $i++) {
+        if (str_repeat($i, 11) == $cpf) {
+            return false;
+        }
+    }
+
+    // Validação do dígito verificador
+    for ($t = 9; $t < 11; $t++) {
+        $d = 0;
+        for ($c = 0; $c < $t; $c++) {
+            $d += $cpf[$c] * (($t + 1) - $c);
+        }
+        $d = ((10 * $d) % 11) % 10;
+        if ($cpf[$c] != $d) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // Verifica se foi solicitado login ou cadastro
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = $_POST['action'];
@@ -43,12 +72,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = $_POST['password'];
         $cpf = $_POST['cpf'];
 
-        // Valida CPF (formato básico)
-        if (!preg_match("/^\d{11}$/", $cpf)) {
+        // Valida CPF
+        if (!validarCPF($cpf)) {
             die("CPF inválido!");
         }
 
-        // Verifica se o usuário já existe
+        // Verifica se a senha é forte
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
+            die("A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.");
+        }
+
+        // Verifica se o usuário ou CPF já existe
         $query = "SELECT * FROM usuarios WHERE username = ? OR cpf = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ss", $username, $cpf);
