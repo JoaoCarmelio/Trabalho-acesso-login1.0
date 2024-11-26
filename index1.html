@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="stylesheet" href="css1.css">
+</head>
+<body>
+   <div class="container">
+        <!-- Formulário de Login -->
+        <div class="form-container">
+            <form action="process.php" method="POST" id="login-form">
+                <h2>Login</h2>
+                <input type="text" name="username" placeholder="Usuário" required>
+                <input type="password" name="password" placeholder="Senha" required>
+                <button type="submit" name="action" value="login">Entrar</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Cadastro -->
+        <div class="form-container">
+            <form action="process.php" method="POST" id="signup-form">
+                <h2>Cadastro</h2>
+                <input type="text" name="name" placeholder="Nome Completo" required>
+                <input type="text" name="username" placeholder="Usuário" required>
+                <input type="password" name="password" placeholder="Senha" required>
+                <input type="text" name="cpf" placeholder="CPF" required>
+                <button type="submit" name="action" value="signup">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
